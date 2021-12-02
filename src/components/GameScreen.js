@@ -8,9 +8,61 @@ import tankFiringImage from '../images/tank--firing.png'
 import tankImage from '../images/tank.png'
 
 export const GameScreen = (props) => {
-  const { gameId, board } = props
+  const { gameId, board, sendEvent } = props
 
   const scale = window.innerWidth < board.dimensions.x ? window.innerWidth / board.dimensions.x : 1
+
+  React.useEffect(() => {
+    const keydownListener = (e) => {
+      switch (e.key) {
+        case 'ArrowDown':
+          sendEvent({ key: 'ArrowDown', eventName: 'keydown' })
+          break
+        case 'ArrowUp':
+          sendEvent({ key: 'ArrowUp', eventName: 'keydown' })
+          break
+        case 'ArrowLeft':
+          sendEvent({ key: 'ArrowLeft', eventName: 'keydown' })
+          break
+        case 'ArrowRight':
+          sendEvent({ key: 'ArrowRight', eventName: 'keydown' })
+          break
+        case ' ':
+          sendEvent({ key: 'Space', eventName: 'keydown' })
+          break
+        default:
+      }
+    }
+
+    const keyupListener = (e) => {
+      switch (e.key) {
+        case 'ArrowDown':
+          sendEvent({ key: 'ArrowDown', eventName: 'keyup' })
+          break
+        case 'ArrowUp':
+          sendEvent({ key: 'ArrowUp', eventName: 'keyup' })
+          break
+        case 'ArrowLeft':
+          sendEvent({ key: 'ArrowLeft', eventName: 'keyup' })
+          break
+        case 'ArrowRight':
+          sendEvent({ key: 'ArrowRight', eventName: 'keyup' })
+          break
+        case ' ':
+          sendEvent({ key: 'Space', eventName: 'keyup' })
+          break
+        default:
+      }
+    }
+
+    window.addEventListener('keydown', keydownListener)
+    window.addEventListener('keyup', keyupListener)
+
+    return () => {
+      window.removeEventListener('keydown', keydownListener)
+      window.removeEventListener('keyup', keyupListener)
+    }
+  }, [sendEvent])
 
   return (
     <Box

@@ -71,6 +71,8 @@ export const App = () => {
 
     socket.on('BOARD_CHANGED', (newBoard) => setBoard(newBoard))
     socket.on('GAME_ENDED', () => setGameEnded(true))
+
+    return () => socket.disconnect()
   }, [])
 
   return (
