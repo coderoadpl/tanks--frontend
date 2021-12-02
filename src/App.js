@@ -3,6 +3,7 @@ import { io } from 'socket.io-client'
 
 import WelcomeScreen from './components/WelcomeScreen'
 import GameEndedOverlay from './components/GameEndedOverlay'
+import GameScreen from './components/GameScreen'
 
 import { ThemeProvider, createTheme } from '@mui/material'
 
@@ -48,6 +49,11 @@ export const App = () => {
     setBoard(null)
   }, [])
 
+  const sendEvent = React.useCallback(async ({ key, eventName }) => {
+    console.log('emit', key, eventName, socket)
+    socket.emit('PLAYER_ACTION', { key, eventName })
+  }, [])
+
   React.useEffect(() => {
     socket.connect()
 
@@ -67,18 +73,24 @@ export const App = () => {
     socket.on('GAME_ENDED', () => setGameEnded(true))
   }, [])
 
-  console.log(gameId, gameEnded, board)
-
   return (
     <ThemeProvider
       theme={createTheme({ palette: { primary: { main: '#000' } } })}
     >
-      <WelcomeScreen
-        errorMessage={errorMessage}
-        onJoinClick={onJoinClick}
-        onNewGameClick={onNewGameClick}
-      />
-
+      {
+        gameId !== null ?
+          <GameScreen
+            gameId={gameId}
+            board={board}
+            sendEvent={sendEvent}
+          />
+          :
+          <WelcomeScreen
+            errorMessage={errorMessage}
+            onJoinClick={onJoinClick}
+            onNewGameClick={onNewGameClick}
+          />
+      }
       {
         gameEnded === true ?
           <GameEndedOverlay
